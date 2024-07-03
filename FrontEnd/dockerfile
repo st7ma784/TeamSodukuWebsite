@@ -1,0 +1,18 @@
+#this dockerfile is to serve the flask app. 
+
+#!/bin/bash
+#using a lightweight docker image. 
+
+FROM python:3-slim
+mkdir /app
+WORKDIR /app
+COPY requirements.txt requirements.txt 
+#install 
+RUN pip install --no-cache-dir --disable-pip-version-check -r requirements.txt  --trusted-host pypi.org
+mkdir /code
+WORKDIR /code
+copy . /code
+
+#run the app with gunicorn.
+EXPOSE 8080:8080
+ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
